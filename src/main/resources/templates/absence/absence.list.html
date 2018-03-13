@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">
+<head>
+    <title>Daftar Absensi</title>
+    <script type="text/javascript">
+
+        var datatableUrl = '[[@{/web/absence/datatable}]]';
+
+        $(function(){
+
+            var dataTable = $('#datatable-absence').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "drawCallback": function () {
+                    $('.btn-delete').click(function(){
+
+                        var url = $(this).data('url');
+
+                        bootbox.confirm({
+                            message: "Yakin ingin menghapus data?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Hapus',
+                                    className: 'btn-danger btn-remove'
+                                },
+                                cancel: {
+                                    label: 'Batal',
+                                    className: 'btn-default'
+                                }
+                            },
+                            callback: function (result) {
+
+                                if(result){
+
+                                    var $btnDelete = $('button.btn-remove');
+
+                                    $.ajax({
+                                        url: url,
+                                        method: 'GET',
+                                        success: function(data){
+                                            dataTable.ajax.reload();
+                                            showMessage('success', 'Data berhasil dihapus');
+                                        },
+                                        error: function (xhr, textStatus, errorThrown) {
+                                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                                showMessage('error', xhr.responseJSON.message);
+                                            } else {
+                                                showMessage('error', 'Hapus data gagal');
+                                            }
+                                        },
+                                        beforeSend: function(){
+                                            $btnDelete.attr('disabled', 'disabled');
+                                            $btnDelete.text('Menghapus..');
+                                        },
+                                        complete: function () {
+                                            $btnDelete.removeAttr('disabled');
+                                            $btnDelete.text('Hapus');
+                                        }
+                                    });
+
+                                }
+                            }
+
+                        });
+                    });
+                },
+                "ajax": {
+                    "url": datatableUrl,
+                    "type": "POST",
+                },
+                "columns": [
+                    {"data": null},
+                    {"data": null},
+                    {"data": "fullName"},
+                    {"data": "jobName"},
+                    {"data": "departmentName"},
+                    {"data": "shiftName"},
+//                    {"data": null},
+                    {"data": null}
+                ],
+                "columnDefs": [{
+                    "targets": 0,
+                    "searchable": false,
+                    "orderable": false,
+                    "class": "column-order-number",
+                    "createdCell": function (td, cellData, rowData, row, col) {
+                        $(td).addClass('text-center');
+                        $(td).html(dataTable.page.info().start + row + 1);
+                    }
+                },
+                {
+                    "targets": 1,
+                    "class": "text-center",
+                    "createdCell": function (td, cellData, rowData, row, col) {
+                        $(td).html( moment(cellData.date).format("DD MMM YYYY"));
+                    }
+                },
+                {
+                    "targets": 6,
+                    "class": "text-center",
+                    "createdCell": function (td, cellData, rowData, row, col) {
+                        console.log(cellData);
+                        $(td).html((cellData.attend) ? "HADIR":cellData.reason);
+                    }
+                }
+//                ,
+//                {
+//                    "targets": -1,
+//                    "searchable": false,
+//                    "orderable": false,
+//                    "createdCell": function (td, data, rowData, row, col) {
+//                        var urlEdit = '[[@{/web/shift/edit}]]/'+ data.id;
+//                        var urlDelete = '[[@{/web/shift/delete}]]/'+ data.id;
+//                        var html = '';
+//                        html += '<a href="'+urlEdit+'" class="btn btn-sm btn-warning btn-sm rollovericons" title="Ubah"><i class="fa fa-pencil" aria-hidden="true"></i></a> ';
+//                        html += '<a href="#" class="btn btn-danger btn-sm btn-delete" data-url="'+urlDelete+'"><i class="fa fa-trash" aria-hidden="true"></i></a>';
+//                        $(td).addClass('text-center');
+//                        $(td).html(html);
+//                    }
+//                }
+                ]
+
+            });
+
+        });
+    </script>
+</head>
+<body>
+
+
+<section class="content-header" layout:fragment="content-header">
+    <h1>Daftar Absensi</h1>
+    <ol class="breadcrumb">
+        <li><a th:href="@{/}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Daftar Absensi</li>
+    </ol>
+</section>
+
+<section class="content container-fluid" layout:fragment="content">
+    <div class="box">
+        <div class="box-header" style="padding: 16px 16px 16px 16px;">
+            <div class="pull-left">
+                <!--<a th:href="@{/web/absence/add}" class="btn btn-sm btn-success"><i class="fa fa-plus"></i> Tambah</a>-->
+                <a th:href="@{/web/absence/template}" class="btn btn-sm btn-success"><i class="fa fa-download"></i> Download Template</a>
+            </div>
+            <div class="pull-right">
+                <form class="form-inline" th:action="@{/web/absence/upload}" method="POST" enctype="multipart/form-data">
+                    <div class="form-group fileinput fileinput-new" data-provides="fileinput">
+                        <span class="btn btn-success btn-sm btn-file"><span class="fileinput-new"><i class="fa fa-upload"></i>Upload Absensi</span><span class="fileinput-exists">Change</span><input type="file" name="file" required></span>
+                        <span class="fileinput-filename"></span>
+                        <a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">&times;</a>
+                    </div>
+                    <div class="form-group hide">
+                        <div class="input-group col-sm-4">
+                            <button type="submit" name="action" class="btn btn-primary">Upload</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <table class="table table-hover" id="datatable-absence">
+                <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Tanggal</th>
+                    <th>Nama Pegawai</th>
+                    <th>Nama Jabatan</th>
+                    <th>Nama Departement</th>
+                    <th>Shift Kerja</th>
+                    <th>Kehadiran</th>
+                    <!--<th>Action</th>-->
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <!-- /.box-body -->
+
+    </div>
+    <!-- /.box -->
+</section>
+
+
+</body>
+</html>

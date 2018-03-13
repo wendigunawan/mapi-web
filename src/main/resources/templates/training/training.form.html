@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">
+<head>
+    <title>Tambah / Ubah Training</title>
+
+    <link rel="stylesheet" th:href="@{/lib/bootstrap-wysihtml5/css/bootstrap3-wysihtml5.min.css}" />
+    <script th:src="@{/lib/bootstrap-wysihtml5/js/bootstrap3-wysihtml5.all.min.js}"></script>
+
+    <script type="text/javascript">
+
+        function doBack(){
+            window.location.href = '[[@{/web/training}]]';
+        }
+
+        $(function(){
+
+            $('.textarea').wysihtml5();
+
+            var $form = $('#form-training');
+
+            $form.submit(function (e) {
+
+                e.preventDefault();
+
+                $btnSubmit = $('#btn-save');
+
+                $(this).ajaxSubmit({
+                    success: function(){
+                        showMessage('success', 'Simpan data berhasil');
+                        setTimeout(function(){
+                            doBack();
+                        }, redirectDuration)
+
+                    },
+                    error: function(){
+                        showMessage('error', 'Gagal menyimpan data');
+                    },
+                    beforeSubmit: function(){
+                        $btnSubmit.attr('disabled', 'disabled');
+                        $btnSubmit.text('Menyimpan...');
+                    },
+                    complete: function(){
+                        $btnSubmit.removeAttr('disabled', 'disabled');
+                        $btnSubmit.text('Simpan');
+                    }
+                });
+
+                return false;
+
+            });
+        });
+    </script>
+
+</head>
+<body>
+
+
+<section class="content-header" layout:fragment="content-header">
+    <h1>Tambah / Ubah Training</h1>
+    <ol class="breadcrumb">
+        <li><a th:href="@{/}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a th:href="@{/web/training}"><i class="fa fa-list-o"></i> Daftar Training</a></li>
+        <li class="active">Tambah / Ubah Training</li>
+    </ol>
+</section>
+
+<section class="content container-fluid" layout:fragment="content">
+    <div class="box">
+
+        <form id="form-training" th:action="@{/web/training/save}" th:object="${training}" method="POST">
+
+            <input type="hidden" th:field="*{id}" name="id">
+
+            <!-- /.box-header -->
+            <div class="box-body">
+
+
+                <div class="form-group">
+                    <label for="title" class="control-label">Judul</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" th:field="*{title}" class="form-control" name="title" id="title"  required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="author" class="control-label">Pengarang</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text"  th:field="*{author}" class="form-control" name="author" id="author" required>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="title" class="control-label">Deskripsi</label>
+                    <div class="input-group col-sm-10">
+                        <textarea class="textarea"  th:field="*{description}" placeholder="Deskripsi" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" required></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="title" class="control-label">File Training</label>
+                    <div class="input-group col-sm-10">
+                        <input type="file" th:field="*{file}" name="file" accept="application/pdf"/>
+                    </div>
+                </div>
+
+            </div>
+            <!-- /.box-body -->
+
+            <div class="box-footer">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"></label>
+                    <div class="input-group col-sm-10" style="padding: 16px 0px 16px 0px;">
+                        <button type="button" class="btn btn-default" onclick="doBack();">Batal</button>
+                        <button type="submit" name="action" id="btn-save" class="btn btn-primary">Simpan</button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+    <!-- /.box -->
+</section>
+
+
+</body>
+</html>

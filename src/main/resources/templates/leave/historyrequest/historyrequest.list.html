@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">
+<head>
+    <title>History Pengajuan Cuti</title>
+
+    <link rel="stylesheet" th:href="@{/css/AdminLTE.min.css}"/>
+    <script type="text/javascript">
+
+        var datatableUrl = '[[@{/web/leaverequest/historydata}]]';
+
+        var dataTable;
+
+        $(function () {
+
+            dataTable = $('#datatable-leave').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": datatableUrl,
+                    "type": "POST",
+                },
+                "columns": [
+                    {"data": null},
+                    {"data": "fullName"},
+                    {"data": "departmentName"},
+                    {"data": null},
+                    {"data": "type"},
+                    {"data": "duration"},
+                    {"data": "status"},
+                    {"data": "note"}
+                ],
+                "columnDefs": [
+                    {
+                        "targets": 0,
+                        "orderable": false,
+                        "searchable": false,
+                        "createdCell": function (td, cellData, rowData, row, col) {
+                            $(td).addClass('text-center');
+                            $(td).html(dataTable.page.info().start + row + 1);
+                        }
+                    },
+                    {
+                        "targets": 3,
+                        "class": "text-center",
+                        "createdCell": function (td, cellData, rowData, row, col) {
+                            $(td).addClass('text-center');
+                            $(td).html( moment(cellData.startDate).format("DD MMM YYYY") + " - " + moment(cellData.endDate).format("DD MMM YYYY"));
+                        }
+                    }]
+
+            });
+
+        });
+    </script>
+</head>
+<body>
+
+
+<section class="content-header" layout:fragment="content-header">
+    <h1><i class="fa fa-building-o"></i> History Pengajuan Cuti</h1>
+    <ol class="breadcrumb">
+        <li><a th:href="@{/}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">History Pengajuan Cuti</li>
+    </ol>
+</section>
+
+<section class="content container-fluid" layout:fragment="content">
+    <div class="box">
+        <!-- /.box-header -->
+        <div class="box-body table-responsive">
+            <table class="table table-hover" id="datatable-leave">
+                <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama</th>
+                    <th>Departement</th>
+                    <th>Tanggal</th>
+                    <th>Jenis Izin</th>
+                    <th>Durasi</th>
+                    <th>Status</th>
+                    <th>Keterangan</th>
+                </tr>
+                </thead>
+
+                <tbody></tbody>
+            </table>
+        </div>
+        <!-- /.box-body -->
+    </div>
+    <!-- /.box -->
+</section>
+</body>
+
+
+</html>

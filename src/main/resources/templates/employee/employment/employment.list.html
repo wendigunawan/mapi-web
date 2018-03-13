@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">
+<head>
+    <title>Daftar Employment Status</title>
+    <script type="text/javascript">
+
+        var datatableUrl = '[[@{/web/employment/datatable}]]';
+
+        var dataTable;
+
+        $(function () {
+
+            dataTable = $('#datatable-employment').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": datatableUrl,
+                    "type": "POST",
+                },
+                "columns": [
+                    {"data": null},
+                    {"data": "name"},
+                    {"data": null}
+                ],
+                "columnDefs": [
+                    {
+                        "targets": 0,
+                        "orderable": false,
+                        "searchable": false,
+                        "class": "column-order-number",
+                        "createdCell": function (td, cellData, rowData, row, col) {
+                            $(td).addClass('text-center');
+                            $(td).html(dataTable.page.info().start + row + 1);
+                        }
+                    },
+                    {
+                        "targets": -1,
+                        "searchable": false,
+                        "orderable": false,
+                        "createdCell": function (td, data, rowData, row, col) {
+                            var urlEdit = '[[@{/web/employment/edit}]]/'+ data.id;
+                            var urlDelete = '[[@{/web/employment/delete}]]/'+ data.id;
+
+                            var html = '';
+                            html += '<a href="'+urlEdit+'"  class="btn btn-sm btn-warning btn-sm rollovericons" title="Ubah"><i class="fa fa-pencil" aria-hidden="true"></i></a> ';
+                            html += '<a href="'+urlDelete+'"  class="btn btn-danger btn-sm"><i class="fa fa-trash" aria-hidden="true"></i></a>';
+                            $(td).addClass('text-center');
+                            $(td).html(html);
+                        }
+                    }]
+
+            });
+
+        });
+    </script>
+</head>
+<body>
+
+
+<section class="content-header" layout:fragment="content-header">
+    <h1><i class="fa fa-building-o"></i> Daftar Employment Status</h1>
+    <ol class="breadcrumb">
+        <li><a th:href="@{/}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Daftar Employment Status</li>
+    </ol>
+</section>
+
+<section class="content container-fluid" layout:fragment="content">
+    <div class="box">
+        <div class="box-header">
+            <a th:href="@{/web/employment/add}" class="btn btn-sm btn-success pull-right"><i class="fa fa-plus"></i>
+                Tambah</a>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body table-responsive">
+            <table class="table table-hover" id="datatable-employment">
+                <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Employment Status</th>
+                    <th>Aksi</th>
+                </tr>
+                </thead>
+
+                <tbody></tbody>
+            </table>
+        </div>
+        <!-- /.box-body -->
+
+    </div>
+    <!-- /.box -->
+</section>
+
+</body>
+
+
+</html>

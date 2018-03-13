@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">
+<head>
+    <title>Daftar Peran</title>
+    <script type="text/javascript">
+
+        var datatableUrl = '[[@{/web/role/datatable}]]';
+
+        $(function(){
+
+            console.log('x');
+
+            var dataTable = $('#datatable-role').DataTable({
+                "processing": false,
+                "serverSide": false,
+                "drawCallback": function () {
+                    $('.btn-delete').click(function(){
+                        var url = $(this).data('url');
+
+                        bootbox.confirm({
+                            message: "Yakin ingin menghapus data?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Hapus',
+                                    className: 'btn-danger btn-remove'
+                                },
+                                cancel: {
+                                    label: 'Batal',
+                                    className: 'btn-default'
+                                }
+                            },
+                            callback: function (result) {
+                                console.log('This was logged in the callback: ' + result);
+
+                                if(result){
+
+                                    var $btnDelete = $('button.btn-remove');
+
+                                    $.ajax({
+                                        url: url,
+                                        method: 'GET',
+                                        success: function(data){
+                                            dataTable.ajax.reload();
+                                            showMessage('success', 'Data berhasil dihapus');
+                                        },
+                                        error: function (xhr, textStatus, errorThrown) {
+                                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                                showMessage('error', xhr.responseJSON.message);
+                                            } else {
+                                                showMessage('error', 'Hapus data gagal');
+                                            }
+                                        },
+                                        beforeSend: function(){
+                                            $btnDelete.attr('disabled', 'disabled');
+                                            $btnDelete.text('Menghapus..');
+                                        },
+                                        complete: function () {
+                                            $btnDelete.removeAttr('disabled');
+                                            $btnDelete.text('Hapus');
+                                        }
+                                    });
+
+                                }
+                            }
+
+                        });
+                    });
+                },
+                "ajax": {
+                    "url": datatableUrl,
+                    "type": "POST",
+                },
+                "columns": [
+                    {"data": null},
+                    {"data": "name"},
+                    {"data": "code"},
+                    {"data": "description"},
+                    {"data": null}
+                ],
+                "columnDefs": [
+                    {
+                        "targets": 0,
+                        "searchable": false,
+                        "orderable": false,
+                        "class": "column-order-number",
+                        "createdCell": function (td, cellData, rowData, row, col) {
+                            $(td).addClass('text-center');
+                            $(td).html(dataTable.page.info().start + row + 1);
+                        }
+                    },
+                    {
+                        "targets": -1,
+                        "searchable": false,
+                        "orderable": false,
+                        "createdCell": function (td, data, rowData, row, col) {
+
+                            var urlEdit = '[[@{/web/role/edit}]]/'+ data.id;
+                            var urlDelete = '[[@{/web/role/delete}]]/'+ data.id;
+                            var html = '';
+                            html += '<a href="'+urlEdit+'" class="btn btn-sm btn-warning rollovericons" title="Ubah"><i class="fa fa-pencil" aria-hidden="true"></i></a> ';
+                            html += '<a href="#" data-url="'+urlDelete+'" class="btn btn-danger btn-sm btn-delete"><i class="fa fa-trash" aria-hidden="true"></i></a>';
+                            $(td).addClass('text-center');
+                            $(td).html(html);
+                        }
+                    }]
+
+            });
+
+        });
+    </script>
+</head>
+<body>
+
+
+<section class="content-header" layout:fragment="content-header">
+    <h1>Daftar Peran</h1>
+    <ol class="breadcrumb">
+        <li><a th:href="@{/}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Daftar Peran</li>
+    </ol>
+</section>
+
+<section class="content container-fluid" layout:fragment="content">
+    <div class="box">
+        <div class="box-header">
+            <a th:href="@{/web/role/add}" class="btn btn-sm btn-success pull-right"><i class="fa fa-plus"></i> Tambah</a>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <table class="table table-hover" id="datatable-role">
+                <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama Peran</th>
+                    <th>Kode Peran</th>
+                    <th>Deskripsi</th>
+                    <th>Aksi</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <!-- /.box-body -->
+
+    </div>
+    <!-- /.box -->
+</section>
+
+</body>
+
+
+</html>

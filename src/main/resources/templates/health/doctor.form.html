@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">
+<head>
+    <title>Tambah / Ubah Dokter</title>
+
+    <script type="text/javascript">
+
+        function doBack(){
+            window.location.href = '[[@{/web/doctor}]]';
+        }
+
+        $(function(){
+
+            var $form = $('#form-doctor');
+
+            $form.submit(function (e) {
+
+                e.preventDefault();
+
+                $btnSubmit = $('#btn-save');
+
+                $(this).ajaxSubmit({
+                    success: function(){
+                        showMessage('success', 'Simpan data berhasil');
+                        setTimeout(function(){
+                            doBack();
+                        }, redirectDuration)
+
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            showMessage('error', xhr.responseJSON.message);
+                        } else {
+                            showMessage('error', 'Gagal menyimpan data');
+                        }
+                    },
+                    beforeSubmit: function(){
+                        $btnSubmit.attr('disabled', 'disabled');
+                        $btnSubmit.text('Menyimpan...');
+                    },
+                    complete: function(){
+                        $btnSubmit.removeAttr('disabled', 'disabled');
+                        $btnSubmit.text('Simpan');
+                    }
+                });
+
+                return false;
+
+            });
+        });
+    </script>
+
+</head>
+<body>
+
+
+<section class="content-header" layout:fragment="content-header">
+    <h1>Tambah / Ubah Dokter</h1>
+    <ol class="breadcrumb">
+        <li><a th:href="@{/}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a th:href="@{/web/doctor}"><i class="fa fa-list-o"></i> Daftar Dokter</a></li>
+        <li class="active">Tambah / Ubah Dokter</li>
+    </ol>
+</section>
+
+<section class="content container-fluid" layout:fragment="content">
+    <div class="box">
+
+        <form class="form-horizontal" id="form-doctor" th:action="@{/web/doctor/save}" th:object="${doctor}" method="POST">
+
+            <input type="hidden" th:field="*{id}" name="id">
+
+
+            <div class="box-header">
+                <h3 class="box-title"></h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+
+
+                <div class="form-group">
+                    <label for="fullName" class="col-sm-2 control-label">Nama Dokter</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" th:field="*{fullName}" class="form-control" name="fullName" id="fullName"  required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="specialist" class="col-sm-2 control-label">Spesialisasi</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" th:field="*{specialist}" class="form-control" name="specialist" id="specialist"  required>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="hospitalId" class="col-sm-2 control-label">Rumah Sakit</label>
+                    <div class="input-group col-sm-4">
+                        <select class="form-control select2" th:field="*{hospitalId}" id="hospitalId">
+                            <option value="" selected disabled>-- Pilih Rumah Sakit --</option>
+                            <option th:each="opt: ${hospitals}" th:value="${opt.id}">[[${opt.name}]]</option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+            <!-- /.box-body -->
+
+            <div class="box-footer">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"></label>
+                    <div class="input-group col-sm-4" style="padding: 16px 0px 16px 0px;">
+                        <button type="button" class="btn btn-default">Batal</button>&nbsp;
+                        <button type="submit" name="action" id="btn-save" class="btn btn-primary">Simpan</button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+    <!-- /.box -->
+</section>
+
+
+</body>
+</html>

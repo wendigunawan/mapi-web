@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">
+<head>
+    <title>Daftar Cuti</title>
+
+    <link rel="stylesheet" th:href="@{/css/AdminLTE.min.css}"/>
+    <script type="text/javascript">
+
+        var datatableUrl = '[[@{/web/leave/datatable}]]';
+        var urlEdit = '[[@{/web/leave/edit}]]';
+        var urlDelete = '[[@{/web/leave/delete}]]';
+
+        var dataTable;
+
+        $(function () {
+
+            dataTable = $('#datatable-department').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": datatableUrl,
+                    "type": "POST",
+                },
+                "columns": [
+                    {"data": null},
+                    {"data": null},
+                    {"data": "duration"},
+                    {"data": "note"},
+                    {"data": null}
+                ],
+                "columnDefs": [
+                    {
+                        "targets": 0,
+                        "orderable": false,
+                        "searchable": false,
+                        "createdCell": function (td, cellData, rowData, row, col) {
+                            $(td).addClass('text-center');
+                            $(td).html(dataTable.page.info().start + row + 1);
+                        }
+                    },
+                    {
+                        "targets": 1,
+                        "class": "text-center",
+                        "createdCell": function (td, cellData, rowData, row, col) {
+                            $(td).addClass('text-center');
+                            $(td).html( moment(cellData.startDate).format("DD MMM YYYY") + " - " + moment(cellData.endDate).format("DD MMM YYYY"));
+                        }
+                    },
+                    {
+                        "targets": -1,
+                        "searchable": false,
+                        "orderable": false,
+                        "createdCell": function (td, data, rowData, row, col) {
+                            var html = '';
+                            html += '<a href="' + urlEdit + '/' + data.id + '" class="btn btn-sm btn-warning btn-sm rollovericons" title="Ubah"><i class="fa fa-pencil" aria-hidden="true"></i></a> ';
+                            html += '<a href="' + urlDelete + '/' + data.id + '" class="btn btn-danger btn-sm"><i class="fa fa-trash" aria-hidden="true"></i></a>';
+                            $(td).addClass('text-center');
+                            $(td).html(html);
+                        }
+                    }]
+
+            });
+
+        });
+    </script>
+</head>
+<body>
+
+
+<section class="content-header" layout:fragment="content-header">
+    <h1><i class="fa fa-building-o"></i> Daftar Cuti</h1>
+    <ol class="breadcrumb">
+        <li><a th:href="@{/}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Daftar Cuti</li>
+    </ol>
+</section>
+
+<section class="content container-fluid" layout:fragment="content">
+    <div class="box">
+        <div class="box-header">
+            <a th:href="@{/web/leave/add}" class="btn btn-sm btn-success pull-right"><i class="fa fa-plus"></i>
+                Tambah</a>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body table-responsive">
+            <table class="table table-hover" id="datatable-department">
+                <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Tanggal</th>
+                    <th>Durasi</th>
+                    <th>Keterangan</th>
+                    <th>Aksi</th>
+                </tr>
+                </thead>
+
+                <tbody></tbody>
+            </table>
+        </div>
+        <!-- /.box-body -->
+
+    </div>
+    <!-- /.box -->
+</section>
+
+</body>
+
+
+</html>

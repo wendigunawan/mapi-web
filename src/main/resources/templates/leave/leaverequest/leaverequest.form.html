@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">
+<head>
+    <title>Tambah Pengajuan Cuti</title>
+    <script type="text/javascript">
+
+        var urlBack = '[[@{/web/leaverequest}]]';
+
+        function doBack(){
+            window.location.href = urlBack;
+        }
+
+        $(function(){
+
+            $('#btn-back').click(function () {
+                doBack();
+            });
+
+            $('#type').on('change', function() {
+                if($(this).val() == "PERMISSION"){
+                    $('#checkbox').removeClass("template");
+                }else{
+                    $('#checkbox').addClass("template");
+                }
+            });
+
+            $('#halfday').bootstrapSwitch();
+            $('#halfday').on('switchChange.bootstrapSwitch', function(event, state) {
+                if(state){
+                    $('#isHalf').val(1);
+                }else{
+                    $('#isHalf').val(0);
+                }
+            });
+
+            $('#datepicker').daterangepicker({
+                "autoApply": true,
+                "startDate": moment($('#start_date').val()),
+                "endDate": moment($('#end_date').val())
+            },function(start, end, label) {
+                console.log(end.diff(start, 'days'));
+                $('#start_date').val(start.format('YYYY-MM-DD'));
+                $('#end_date').val(end.format('YYYY-MM-DD'));
+                $('#duration').val(end.diff(start, 'days'));
+            });
+
+            var $form = $('#form-leave');
+
+            $form.submit(function (e) {
+
+                e.preventDefault();
+
+                $btnSubmit = $('#btn-save');
+
+                $(this).ajaxSubmit({
+                    success: function(){
+                        showMessage('success', 'Simpan data berhasil');
+                        setTimeout(function(){
+                            doBack();
+                        }, redirectDuration);
+
+                    },
+                    error: function(){
+                        showMessage('error', 'Gagal menyimpan data');
+                    },
+                    beforeSubmit: function(){
+                        $btnSubmit.attr('disabled', 'disabled');
+                        $btnSubmit.text('Menyimpan...');
+                    },
+                    complete: function(){
+                        $btnSubmit.removeAttr('disabled', 'disabled');
+                        $btnSubmit.text('Simpan');
+                    }
+                });
+
+                return false;
+
+            });
+
+        });
+    </script>
+</head>
+<body>
+
+
+<section class="content-header" layout:fragment="content-header">
+    <h1><i class="fa fa-building-o"></i> Tambah Pengajuan Cuti</h1>
+    <ol class="breadcrumb">
+        <li><a th:href="@{/}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a th:href="@{/web/leaverequest}"><i class="fa fa-list-o"></i> Daftar Pengajuan Cuti</a></li>
+        <li class="active">Form</li>
+    </ol>
+</section>
+
+<section class="content container-fluid" layout:fragment="content">
+    <div class="box">
+
+        <form class="form-horizontal" id="form-leave" th:action="@{/web/leaverequest/save}" th:object="${leaverequest}" method="POST">
+
+            <div class="box-header">
+                <h3 class="box-title"></h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+
+                <div class="form-group">
+                    <label for="employee" class="col-sm-2 control-label">Nama Pegawai</label>
+                    <div class="input-group col-sm-4">
+                        <select class="form-control select2"  th:field="*{employeeId}" id="employee">
+                            <option value="" selected disabled>-- Pilih Pegawai --</option>
+                            <option th:each="employee: ${employees}" th:value="${employee.id}">[[${employee.fullName}]]</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="type" class="col-sm-2 control-label">Jenis Izin</label>
+                    <div class="input-group col-sm-4">
+                        <select class="form-control select2" th:field="*{type}" id="type">
+                            <option value="" selected disabled>-- Pilih Jenis Izin --</option>
+                            <option th:value="${typeLeave}">Leave</option>
+                            <option th:value="${typeSick}">Sick</option>
+                            <option th:value="${typePermission}">Permission</option>
+                            <option th:value="${typeLate}">Late</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="datepicker" class="col-sm-2 control-label">Tanggal</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" id="datepicker" class="form-control" required>
+                        <input type="hidden" id="start_date" th:field="*{startDate}">
+                        <input type="hidden" id="end_date" th:field="*{endDate}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="duration" class="col-sm-2 control-label">Durasi</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" th:field="*{duration}" class="form-control" name="duration" id="duration"  readonly>
+                    </div>
+                </div>
+
+                <div id="checkbox" class="form-group template">
+                    <label for="duration" class="col-sm-2 control-label">Half Day?</label>
+                    <div class="input-group col-sm-4">
+                        <input type="checkbox" data-size="small" data-on-text="Yes"  data-off-text="No" id="halfday" name="halfday">
+                        <input value="0" type="hidden" th:field="*{halfDay}" id="isHalf"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description" class="col-sm-2 control-label">Keterangan</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text"  th:field="*{note}" class="form-control" name="description" id="description" required>
+                    </div>
+                </div>
+
+
+            </div>
+            <!-- /.box-body -->
+
+            <div class="box-footer">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"></label>
+                    <div class="input-group col-sm-4" style="padding: 16px 0px 16px 0px;">
+                        <button type="button" class="btn btn-default" id="btn-back">Batal</button>&nbsp;
+                        <button type="submit" name="action" id="btn-save" class="btn btn-primary">Simpan</button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+    <!-- /.box -->
+</section>
+
+
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">
+<head>
+    <title>Daftar Pegawai</title>
+    <script type="text/javascript">
+
+        var dataTable;
+        var datatableUrl = '[[@{/web/employee/datatable}]]';
+        var createAccountUrl = '[[@{/web/employee/createAccount}]]';
+
+
+        function createAccount(id){
+            console.log('id = '+id);
+
+            $.ajax({
+                url: createAccountUrl,
+                data: {'id': id},
+                method: 'POST',
+                success: function(data){
+                    showMessage('success', 'Akun berhasil diaktifkan');
+                    dataTable.ajax.reload();
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        showMessage('error', xhr.responseJSON.message);
+                    } else {
+                        showMessage('error', 'Gagal mengaktifkan akun');
+                    }
+                },
+                beforeSend: function(){
+
+                },
+                complete: function(){
+
+                }
+
+
+
+            });
+
+        }
+
+        $(function(){
+
+            console.log('x');
+
+            dataTable = $('#datatable-employee').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": datatableUrl,
+                    "type": "POST",
+                },
+                "columns": [
+                    {"data": null},
+                    {"data": "nik"},
+                    {"data": "fullName"},
+                    {"data": null},
+                    {"data": null},
+                    {"data": null},
+                    {"data": "status"},
+                    {"data": null}
+                ],
+                "columnDefs": [
+                    {
+                        "targets": 0,
+                        "searchable": false,
+                        "orderable": false,
+                        "createdCell": function (td, cellData, rowData, row, col) {
+                            $(td).addClass('text-center');
+                            $(td).html(dataTable.page.info().start + row + 1);
+                        }
+                    },
+                    {
+                        "targets": 3,
+                        "class": "text-center",
+                        "createdCell": function (td, cellData, rowData, row, col) {
+                            if(cellData.gender == 'MALE'){
+                                $(td).html('Pria');
+                            }else{
+                                $(td).html('Wanita');
+                            }
+                        }
+                    },
+                    {
+                        "targets": 5,
+                        "createdCell": function (td, cellData, rowData, row, col) {
+                            $(td).html(cellData.currentJob.name);
+                        }
+                    },
+                    {
+                        "targets": 4,
+                        "createdCell": function (td, cellData, rowData, row, col) {
+                            $(td).html(cellData.currentDepartment.name);
+                        }
+                    },
+                    {
+                        "targets": 6,
+                        "class": "text-center"
+                    },
+                    {
+                        "targets": -1,
+                        "searchable": false,
+                        "orderable": false,
+                        "createdCell": function (td, data, rowData, row, col) {
+
+                            var urlEdit = '[[@{/web/employee/edit}]]/'+ data.id;
+                            var urlDelete = '[[@{/web/employee/delete}]]/'+ data.id;
+                            var urlCreateAccount = '[[@{/web/employee/createAccount}]]/'+ data.id;
+
+                            var html = '';
+                            html += '<a href="'+urlEdit+'" class="btn btn-sm btn-warning btn-sm rollovericons" title="Ubah"><i class="fa fa-pencil" aria-hidden="true"></i></a> ';
+                            html += '<a href="'+urlDelete+'" class="btn btn-danger btn-sm rollovericons"><i class="fa fa-trash" aria-hidden="true"></i></a>';
+                            html += '<a href="javascript:createAccount(\''+data.id+'\')" class="btn btn-primary btn-sm rollovericons" title="Buat Akun"><i class="fa fa-user" aria-hidden="true"></i></a>';
+                            $(td).addClass('text-center');
+                            $(td).html(html);
+                        }
+                    }]
+
+            });
+
+        });
+    </script>
+</head>
+<body>
+
+
+<section class="content-header" layout:fragment="content-header">
+    <h1>Daftar Pegawai</h1>
+    <ol class="breadcrumb">
+        <li><a th:href="@{/}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Daftar Pegawai</li>
+    </ol>
+</section>
+
+<section class="content container-fluid" layout:fragment="content">
+    <div class="box">
+        <div class="box-header">
+            <a th:href="@{/web/employee/add}" class="btn btn-sm btn-success pull-right"><i class="fa fa-plus"></i> Tambah</a>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <table class="table table-hover" id="datatable-employee">
+                <thead>
+                <tr>
+                    <th>No</th>
+                    <th>NIK</th>
+                    <th>Nama Lengkap</th>
+                    <th>Jenis Kelamin</th>
+                    <th>Departemen</th>
+                    <th>Jabatan</th>
+                    <th>Status</th>
+                    <th style="width: 15%;">Aksi</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <!-- /.box-body -->
+
+    </div>
+    <!-- /.box -->
+</section>
+
+</body>
+
+
+</html>

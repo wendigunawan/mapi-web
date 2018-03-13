@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">
+<head>
+    <title>Tambah Overtime</title>
+    <script type="text/javascript">
+
+        var urlBack = '[[@{/web/leave}]]';
+
+        function doBack(){
+            window.location.href = urlBack;
+        }
+        
+        function duration() {
+            var hoursEnd = $('.datepicker').val() + " " + $('#hours-end').val();
+            var hoursStart = $('.datepicker').val() + " " + $('#hours-start').val();
+            var a = moment(hoursEnd);
+            var b = moment(hoursStart);
+            var c = moment.duration(a.diff(b));
+            $('#duration').val(c.asHours());
+        }
+
+        $(function(){
+
+            $('#btn-back').click(function () {
+                doBack();
+            });
+
+            $('.datepicker').datepicker({
+                format: "yyyy-mm-dd",
+                autoclose: true
+            });
+
+            //Timepicker
+            $('.timepicker').timepicker({
+                showMeridian: false
+            }).on('changeTime.timepicker', function(e) {
+                duration();
+            });
+
+            var $form = $('#form-overtime');
+
+            $form.submit(function (e) {
+
+                e.preventDefault();
+
+                $btnSubmit = $('#btn-save');
+
+                $(this).ajaxSubmit({
+                    success: function(){
+                        showMessage('success', 'Simpan data berhasil');
+                        setTimeout(function(){
+                            doBack();
+                        }, redirectDuration);
+
+                    },
+                    error: function(){
+                        showMessage('error', 'Gagal menyimpan data');
+                    },
+                    beforeSubmit: function(){
+                        $btnSubmit.attr('disabled', 'disabled');
+                        $btnSubmit.text('Menyimpan...');
+                    },
+                    complete: function(){
+                        $btnSubmit.removeAttr('disabled', 'disabled');
+                        $btnSubmit.text('Simpan');
+                    }
+                });
+
+                return false;
+
+            });
+
+        });
+    </script>
+</head>
+<body>
+
+
+<section class="content-header" layout:fragment="content-header">
+    <h1><i class="fa fa-building-o"></i> Tambah Overtime</h1>
+    <ol class="breadcrumb">
+        <li><a th:href="@{/}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a th:href="@{/web/leave}"><i class="fa fa-list-o"></i> Daftar Overtime</a></li>
+        <li class="active">Form</li>
+    </ol>
+</section>
+
+<section class="content container-fluid" layout:fragment="content">
+    <div class="box">
+
+        <form class="form-horizontal" id="form-leave" th:action="@{/web/overtime/save}" th:object="${overtime}" method="POST">
+
+            <input type="hidden" name="id">
+
+
+            <div class="box-header">
+                <h3 class="box-title"></h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+
+                <div class="form-group">
+                    <label for="employee" class="col-sm-2 control-label">Nama Pegawai</label>
+                    <div class="input-group col-sm-4">
+                        <select class="form-control select2"  th:field="*{requestBy}" id="employee">
+                            <option value="" selected disabled>-- Pilih Pegawai --</option>
+                            <option th:each="employee: ${employees}" th:value="${employee.id}">[[${employee.fullName}]]</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="datepicker" class="col-sm-2 control-label">Tanggal</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" id="datepicker" th:field="*{requestDate}" class="form-control datepicker" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Jam Lembur</label>
+                    <div class="col-sm-6">
+                        <div class="form-group row">
+                            <label for="hours-start" class="col-sm-2 control-label">Mulai</label>
+                            <div class="input-group col-sm-4 bootstrap-timepicker">
+                                <input type="text" id="hours-start"  th:field="*{startTime}" class="form-control timepicker" required>
+                            </div>
+                            <br>
+                            <label for="hours-end" class="col-sm-2 control-label">Selesai</label>
+                            <div class="input-group col-sm-4 bootstrap-timepicker">
+                                <input type="text" id="hours-end"  th:field="*{endTime}" class="form-control timepicker" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="duration" class="col-sm-2 control-label">Durasi</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" class="form-control"  th:field="*{duration}" name="duration" id="duration"  readonly>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description" class="col-sm-2 control-label">Keterangan</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text"  class="form-control"  th:field="*{note}" name="description" id="description" required>
+                    </div>
+                </div>
+
+
+            </div>
+            <!-- /.box-body -->
+
+            <div class="box-footer">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"></label>
+                    <div class="input-group col-sm-4" style="padding: 16px 0px 16px 0px;">
+                        <button type="button" class="btn btn-default" id="btn-back">Batal</button>&nbsp;
+                        <button type="submit" name="action" id="btn-save" class="btn btn-primary">Simpan</button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+    <!-- /.box -->
+</section>
+
+
+</body>
+</html>

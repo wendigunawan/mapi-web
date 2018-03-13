@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">
+<head>
+    <title>Tambah / Ubah Bank</title>
+    <script type="text/javascript">
+
+        var urlBack = '[[@{/web/absence}]]';
+
+        function doBack(){
+            window.location.href = urlBack;
+        }
+
+        $(function(){
+
+            $('#btn-back').click(function () {
+                doBack();
+            });
+
+        });
+    </script>
+</head>
+<body>
+
+
+<section class="content-header" layout:fragment="content-header">
+    <h1><i class="fa fa-building-o"></i> Tambah / Ubah Bank</h1>
+    <ol class="breadcrumb">
+        <li><a th:href="@{/}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a th:href="@{/web/absence}"><i class="fa fa-list-o"></i> Daftar Absensi</a></li>
+        <li class="active">Form</li>
+    </ol>
+</section>
+
+<section class="content container-fluid" layout:fragment="content">
+    <div class="box">
+
+        <form class="form-horizontal" th:action="@{/web/absence/add}" th:object="${attendanceAddForm}" method="POST">
+
+
+            <div class="box-header">
+                <h3 class="box-title"></h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+
+                <table class="table">
+
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Status</th>
+                    </tr>
+
+                    <tr th:each="attendance: ${attendanceAddForm.attendances}">
+                        <td>${attendance.date}</td>
+                        <td>${attendance.attend}</td>
+                    </tr>
+
+                </table>
+
+            </div>
+            <!-- /.box-body -->
+
+            <div class="box-footer">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"></label>
+                    <div class="input-group col-sm-4" style="padding: 16px 0px 16px 0px;">
+                        <button type="button" class="btn btn-default" id="btn-back">Batal</button>&nbsp;
+                        <button type="submit" name="action" id="btn-save" class="btn btn-primary">Simpan</button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+    <!-- /.box -->
+</section>
+
+
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">
+<head>
+    <title>Daftar Slip Gaji</title>
+
+    <link rel="stylesheet" th:href="@{/css/AdminLTE.min.css}"/>
+    <script type="text/javascript">
+
+        var datatableUrl = '[[@{/web/paycheck/datatable}]]';
+
+        var dataTable;
+
+        $(function () {
+
+            dataTable = $('#datatable-paycheck').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": datatableUrl,
+                    "type": "POST",
+                },
+                "columns": [
+                    {"data": null},
+                    {"data": null},
+                    {"data": null},
+                    {
+                        "data": "salaryDate",
+                        render: function(d){
+                            return moment(d).format("MMMM YYYY");
+                        }
+                    },
+                    {"data": null},
+                    {"data": null}
+                ],
+                "columnDefs": [
+                    {
+                        "targets": 0,
+                        "orderable": false,
+                        "searchable": false,
+                        "createdCell": function (td, cellData, rowData, row, col) {
+                            $(td).addClass('text-center');
+                            $(td).html(dataTable.page.info().start + row + 1);
+                        }
+                    },
+                    {
+                        "targets": 1,
+                        "createdCell": function (td, cellData, rowData, row, col) {
+                            $(td).html(cellData.employee.nik);
+                        }
+                    },
+                    {
+                        "targets": 4,
+                        "createdCell": function (td, cellData, rowData, row, col) {
+                            $(td).html("<img class='img-rounded' width='50' height='50' src=" + cellData.fileNameOrigin + " />");
+                        }
+                    },
+                    {
+                        "targets": 2,
+                        "createdCell": function (td, cellData, rowData, row, col) {
+                            $(td).html(cellData.employee.fullName);
+                        }
+                    },
+                    {
+                        "targets": -1,
+                        "searchable": false,
+                        "orderable": false,
+                        "createdCell": function (td, data, rowData, row, col) {
+
+                            var urlEdit = '[[@{/web/paycheck/edit}]]/'+ data.id;
+                            var urlDelete = '[[@{/web/paycheck/delete}]]/'+ data.id;
+
+                            var html = '';
+                            html += '<a href="'+urlEdit+'"  class="btn btn-sm btn-warning btn-sm rollovericons" title="Ubah"><i class="fa fa-pencil" aria-hidden="true"></i></a> ';
+                            html += '<a href="'+urlDelete+'"  class="btn btn-danger btn-sm"><i class="fa fa-trash" aria-hidden="true"></i></a>';
+                            $(td).addClass('text-center');
+                            $(td).html(html);
+                        }
+                    }]
+
+            });
+
+        });
+    </script>
+</head>
+<body>
+
+
+<section class="content-header" layout:fragment="content-header">
+    <h1>Daftar Slip Gaji</h1>
+    <ol class="breadcrumb">
+        <li><a th:href="@{/}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Daftar Slip Gaji</li>
+    </ol>
+</section>
+
+<section class="content container-fluid" layout:fragment="content">
+    <div class="box">
+        <div class="box-header">
+            <a th:href="@{/web/paycheck/add}" class="btn btn-sm btn-success pull-right"><i class="fa fa-plus"></i>
+                Tambah</a>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body table-responsive">
+            <table class="table table-hover" id="datatable-paycheck">
+                <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nik</th>
+                    <th>Nama Pegawai</th>
+                    <th>Bulan</th>
+                    <th>Slip Gaji</th>
+                    <th>Aksi</th>
+                </tr>
+                </thead>
+
+                <tbody></tbody>
+            </table>
+        </div>
+        <!-- /.box-body -->
+
+    </div>
+    <!-- /.box -->
+</section>
+
+</body>
+
+
+</html>

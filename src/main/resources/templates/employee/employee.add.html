@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">
+<head>
+    <title>Tambah Pegawai</title>
+
+    <script type="text/javascript">
+
+        var urlBack = '[[@{/web/employee}]]';
+
+        function doBack(){
+            window.location.href = urlBack;
+        }
+
+        function dynamicForm() {
+            $('<div/>', {
+                'class' : 'emergencyContact dynamic-field', html: $('#emergency-template').clone().html()
+            }).appendTo('#emergency-container');
+
+            $('#btn-add-emergency').click(function () {
+                $('<div/>', {
+                    'class': 'emergencyContact dynamic-field', html: $('#emergency-template').clone().html()
+                }).hide().appendTo('#emergency-container').slideDown('slow');
+            });
+
+            $('<div/>', {
+                'class' : 'dependentsContact dynamic-field', html: $('#dependents-template').clone().html()
+            }).appendTo('#dependents-container');
+
+            $('#btn-add-dependents').click(function () {
+                $('<div/>', {
+                    'class': 'dependentsContact dynamic-field', html: $('#dependents-template').clone().html()
+                }).hide().appendTo('#dependents-container').slideDown('slow');
+            });
+
+            $('<div/>', {
+                'class' : 'workExperience dynamic-field', html: $('#work-experience-template').clone().html()
+            }).appendTo('#work-experience-container');
+
+            $('#work-experience-btn').click(function () {
+                $('<div/>', {
+                    'class': 'workExperience dynamic-field', html: $('#work-experience-template').clone().html()
+                }).hide().appendTo('#work-experience-container').slideDown('slow');
+            });
+
+
+            $('<div/>', {
+                'class' : 'education dynamic-field', html: $('#education-template').clone().html()
+            }).appendTo('#education-container');
+
+            $('#btn-add-education').click(function () {
+                $('<div/>', {
+                    'class': 'education dynamic-field', html: $('#education-template').clone().html()
+                }).hide().appendTo('#education-container').slideDown('slow');
+            });
+
+            $('<div/>', {
+                'class' : 'skill dynamic-field', html: $('#skill-template').clone().html()
+            }).appendTo('#skill-container');
+
+            $('#btn-add-skill').click(function () {
+                $('<div/>', {
+                    'class': 'skill dynamic-field', html: $('#skill-template').clone().html()
+                }).hide().appendTo('#skill-container').slideDown('slow');
+            });
+
+            $('<div/>', {
+                'class' : 'languages dynamic-field', html: $('#languages-template').clone().html()
+            }).appendTo('#languages-container');
+
+            $('#btn-add-languages').click(function () {
+                $('<div/>', {
+                    'class': 'languages dynamic-field', html: $('#languages-template').clone().html()
+                }).hide().appendTo('#languages-container').slideDown('slow');
+            });
+
+            $('<div/>', {
+                'class' : 'certification dynamic-field', html: $('#certification-template').clone().html()
+            }).appendTo('#certification-container');
+
+            $('#btn-add-certification').click(function () {
+                $('<div/>', {
+                    'class': 'certification dynamic-field', html: $('#certification-template').clone().html()
+                }).hide().appendTo('#certification-container').slideDown('slow');
+            });
+        }
+
+        $(function(){
+
+            dynamicForm();
+
+            $('.datepicker').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true
+            });
+
+            $('.monthpicker').datepicker({
+                format: "yyyy-mm",
+                viewMode: "months",
+                minViewMode: "months",
+                autoclose: true
+            });
+
+
+            $('#btn-back').click(function(){
+                doBack();
+            });
+
+
+        });
+    </script>
+
+</head>
+<body>
+
+
+<section class="content-header" layout:fragment="content-header">
+    <h1>Tambah Pegawai</h1>
+    <ol class="breadcrumb">
+        <li><a th:href="@{/}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a th:href="@{/web/employee}"><i class="fa fa-list-o"></i> Daftar Pegawai</a></li>
+        <li class="active">Tambah Pegawai</li>
+    </ol>
+</section>
+
+<section class="content container-fluid" layout:fragment="content">
+    <div class="box">
+
+        <div class="nav-tabs-custom">
+
+            <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#personal-details">Data Pribadi</a></li>
+                <li><a data-toggle="tab" href="#contact-details">Detil Kontak</a></li>
+                <li><a data-toggle="tab" href="#emergency-contacts">Kontak Darurat</a></li>
+                <li><a data-toggle="tab" href="#dependents">Tanggungan</a></li>
+                <li><a data-toggle="tab" href="#jobs">Pekerjaan</a></li>
+                <li><a data-toggle="tab" href="#salary">Gaji</a></li>
+                <li><a data-toggle="tab" href="#qualifications">Kualifikasi</a></li>
+            </ul>
+
+            <div id="certification-template" class="template">
+                <div class="form-group">
+                    <label for="currentCert" class="col-sm-2 control-label">Tipe Sertifikasi</label>
+                    <div class="input-group col-sm-4">
+                        <select class="form-control" data-width="100%" id="currentCert">
+                            <option value="" selected disabled>-- Pilih Tipe Sertifikasi --</option>
+                            <option th:each="cert: ${certificates}">[[${cert.name}]]</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="certNumb" class="col-sm-2 control-label">Nomor Sertifikasi</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" class="form-control" id="certNumb"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="issued-month" class="col-sm-2 control-label">Diterbitkan Pada</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" class="form-control monthpicker" id="issued-month"  />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="expired-month" class="col-sm-2 control-label">Expired Pada</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" class="form-control monthpicker" id="expired-month"  />
+                    </div>
+                </div>
+            </div>
+
+            <div id="emergency-template" class="template">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Name</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" name="relation-name[]" class="form-control"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Relationship</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" name="relation[]" class="form-control"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Mobile Phone</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" name="relation-mobile-phone[]" class="form-control"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Home Telephone</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" name="relation-home-phone[]" class="form-control"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Work Telephone</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" name="relation-work-phone[]" class="form-control"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Address</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" name="relation-address[]" class="form-control"/>
+                    </div>
+                </div>
+            </div>
+
+            <div id="dependents-template" class="template">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Name</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" name="dependents-name" class="form-control"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Relationship</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" name="dependents-relation" class="form-control"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Jenis Kelamin</label>
+                    <div class="input-group col-sm-4">
+                        <input type="radio" name="dependents-gender" th:value="${genderMale}"> Pria
+                        <input type="radio" name="dependents-gender" th:value="${genderFemale}"> Wanita
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Tanggal Lahir</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" class="form-control datepicker" rows="3" name="dependents-birthdate" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="template" id="work-experience-template">
+                <div class="form-group">
+                    <label for="company-name" class="col-sm-2 control-label">Perusahaan</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" name="company-name" class="form-control" id="company-name"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="job-name" class="col-sm-2 control-label">Jabatan</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" class="form-control" id="job-name"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="start-month" class="col-sm-2 control-label">Mulai Kerja</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" class="form-control monthpicker" id="start-month"  />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="end-month" class="col-sm-2 control-label">Selesai Kerja</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" class="form-control monthpicker" id="end-month"  />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="review" class="col-sm-2 control-label">Review</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" class="form-control" id="review"/>
+                    </div>
+                </div>
+            </div>
+
+            <div id="education-template" class="template">
+                <div class="form-group">
+                    <label for="currentEdLevel" class="col-sm-2 control-label">Level</label>
+                    <div class="input-group col-sm-4">
+                        <select class="form-control" data-width="100%" id="currentEdLevel">
+                            <option value="" selected disabled>-- Pilih Level --</option>
+                            <option th:each="currentEd: ${educations}">[[${currentEd.name}]]</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="institution" class="col-sm-2 control-label">Nama Institusi</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" class="form-control" id="institution"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="major" class="col-sm-2 control-label">Jurusan</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" class="form-control" id="major"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="start-month" class="col-sm-2 control-label">Dari Bulan</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" class="form-control monthpicker" id="education-start-month"  />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="end-month" class="col-sm-2 control-label">Selesai Bulan</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" class="form-control monthpicker" id="education-end-month"  />
+                    </div>
+                </div>
+            </div>
+
+            <div id="skill-template" class="template">
+                <div class="form-group">
+                    <label for="currentSkill" class="col-sm-2 control-label">Skill</label>
+                    <div class="input-group col-sm-4">
+                        <select class="form-control" data-width="100%" id="currentSkill">
+                            <option value="" selected disabled>-- Pilih Skill --</option>
+                            <option th:each="skill: ${skills}">[[${skill.name}]]</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="experience" class="col-sm-2 control-label">Experience</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" class="form-control" id="experience"  />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="" class="col-sm-2 control-label">Keterangan</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" class="form-control"  />
+                    </div>
+                </div>
+            </div>
+
+            <div id="languages-template" class="template">
+                <div class="form-group">
+                    <label for="currentLanguage" class="col-sm-2 control-label">Bahasa</label>
+                    <div class="input-group col-sm-4">
+                        <select class="form-control" data-width="100%" id="currentLanguage">
+                            <option value="" selected disabled>-- Pilih Bahasa --</option>
+                            <option th:each="lng: ${language}">[[${lng.name}]]</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="currentFluency" class="col-sm-2 control-label">Fluency</label>
+                    <div class="input-group col-sm-4">
+                        <select class="form-control" data-width="100%" id="currentFluency">
+                            <option value="" selected disabled>-- Fluency --</option>
+                            <option>All</option>
+                            <option>Writing</option>
+                            <option>Speaking</option>
+                            <option>Reading</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="currentComp" class="col-sm-2 control-label">Kompetensi</label>
+                    <div class="input-group col-sm-4">
+                        <select class="form-control" data-width="100%" id="currentComp">
+                            <option value="" selected disabled>-- Kompetensi --</option>
+                            <option>Poor</option>
+                            <option>Basic</option>
+                            <option>Good</option>
+                            <option>Mother Tounge</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="comments" class="col-sm-2 control-label">Keterangan</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" class="form-control" id="comments"  />
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content">
+                <form class="form-horizontal" id="form-employee" method="POST">
+                    <div id="personal-details" class="tab-pane active">
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label for="nik" class="col-sm-2 control-label">NIK</label>
+                                <div class="input-group col-sm-4">
+                                    <input type="text" name="nik" class="form-control" id="nik" >
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="fullName" class="col-sm-2 control-label">Nama Pegawai</label>
+                                <div class="input-group col-sm-4">
+                                    <input type="text" name="fullName" class="form-control" id="fullName" >
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Jenis Kelamin</label>
+                                <div class="input-group col-sm-4">
+                                    <input type="radio" name="gender" th:value="${genderMale}"> Pria
+                                    <input type="radio" name="gender" th:value="${genderFemale}"> Wanita
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="birthPlace" class="col-sm-2 control-label">Tempat Lahir</label>
+                                <div class="input-group col-sm-4">
+                                    <input type="text" class="form-control" rows="3" name="birthPlace" id="birthPlace" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="birthDate" class="col-sm-2 control-label">Tanggal Lahir</label>
+                                <div class="input-group col-sm-4">
+                                    <input type="text" class="form-control datepicker" name="birthDate" id="birthDate" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="joinDate" class="col-sm-2 control-label">Tanggal Bergabung</label>
+                                <div class="input-group col-sm-4">
+                                    <input type="text" class="form-control datepicker" name="joinDate" id="joinDate" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phoneNumber" class="col-sm-2 control-label">NPWP</label>
+                                <div class="input-group col-sm-4">
+                                    <input type="text" name="npwp" class="form-control" id="npwp">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="picture" class="col-sm-2 control-label">Photo</label>
+                                <div class="input-group col-sm-4">
+                                    <div class="fileinput fileinput-new" data-provides="fileinput">
+                                        <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
+                                            <img data-src="holder.js/100%x100%" alt="..."></div>
+                                        <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"></div>
+                                        <div>
+                              <span class="btn btn-default btn-file">
+                                  <span class="fileinput-new">Select image</span>
+                                  <span class="fileinput-exists">Change</span>
+                                  <input type="file" id="picture" name="file"></span>
+                                            <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="status" class="col-sm-2 control-label">Status</label>
+                                <div class="input-group col-sm-4">
+                                    <select class="form-control select2" name="status" id="status">
+                                        <option value="" selected disabled>-- Pilih Status --</option>
+                                        <option th:value="${statusLeave}">Leave</option>
+                                        <option th:value="${statusActive}">Active</option>
+                                        <option th:value="${statusResign}">Resign</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+
+                    <div id="contact-details" class="tab-pane">
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label for="address" class="col-sm-2 control-label">Alamat</label>
+                                <div class="input-group col-sm-4">
+                                    <input type="text" class="form-control" name="address" id="address"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="city" class="col-sm-2 control-label">Kota</label>
+                                <div class="input-group col-sm-4">
+                                    <input type="text" class="form-control" name="city" id="city"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="state" class="col-sm-2 control-label">Provinsi</label>
+                                <div class="input-group col-sm-4">
+                                    <input type="text" class="form-control" name="province" id="state"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="postalcode" class="col-sm-2 control-label">Kode Pos</label>
+                                <div class="input-group col-sm-4">
+                                    <input type="text" class="form-control" name="postalcode" id="postalcode"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="phoneNumber" class="col-sm-2 control-label">Nomor HP</label>
+                                <div class="input-group col-sm-4">
+                                    <input type="text" name="phoneNumber" class="form-control" id="phoneNumber">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="email" class="col-sm-2 control-label">Email</label>
+                                <div class="input-group col-sm-4">
+                                    <input type="email" class="form-control" name="email" id="email"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="emergency-contacts" class="tab-pane">
+                        <div id="emergency-container">
+
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"></label>
+                            <div class="input-group col-sm-4">
+                                <button type="button" id="btn-add-emergency" class="btn btn-default">Add</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="dependents" class="tab-pane">
+                        <div id="dependents-container">
+
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"></label>
+                            <div class="input-group col-sm-4">
+                                <button type="button" name="addRow" class="btn btn-default" id="btn-add-dependents">Add</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="jobs" class="tab-pane">
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label for="currentManager" class="col-sm-2 control-label">Manager</label>
+                                <div class="input-group col-sm-4">
+                                    <select class="form-control select2" id="currentManager" data-width="100%">
+                                        <option value="" selected disabled>-- Pilih Manager --</option>
+                                        <option th:each="mng: ${employees}" th:value="${mng.id}" th:text="${mng.fullName}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="currentDepartment" class="col-sm-2 control-label">Departemen</label>
+                                <div class="input-group col-sm-4">
+                                    <select class="form-control select2" data-width="100%" id="currentDepartment">
+                                        <option value="" selected disabled>-- Pilih Departemen --</option>
+                                        <option th:each="currentDepartment: ${departments}" th:value="${currentDepartment.id}">[[${currentDepartment.name}]]</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="currentJob" class="col-sm-2 control-label">Jabatan</label>
+                                <div class="input-group col-sm-4">
+                                    <select class="form-control select2" data-width="100%"id="currentJob">
+                                        <option value="" selected disabled>-- Pilih Jabatan --</option>
+                                        <option th:each="currentJob: ${jobs}" th:value="${currentJob.id}">[[${currentJob.name}]]</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="salary" class="tab-pane">
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label for="birthPlace" class="col-sm-2 control-label">Gaji</label>
+                                <div class="input-group col-sm-4">
+                                    <input type="text" class="form-control" rows="3" id="currentSalary" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="qualifications" class="tab-pane">
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingOne">
+                                    <h4 class="panel-title">
+                                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            Work Experience
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                    <div class="panel-body">
+                                        <div id="work-experience-container">
+
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label"></label>
+                                            <div class="input-group col-sm-4">
+                                                <button type="button" name="addRow" id="work-experience-btn" class="btn btn-default">Add</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingTwo">
+                                    <h4 class="panel-title">
+                                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                            Education
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                                    <div class="panel-body">
+                                        <div id="education-container">
+
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label"></label>
+                                            <div class="input-group col-sm-4">
+                                                <button type="button" name="addRow" id="btn-add-education" class="btn btn-default">Add</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingThree">
+                                    <h4 class="panel-title">
+                                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                            Skill
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                                    <div class="panel-body">
+                                        <div id="skill-container">
+
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label"></label>
+                                            <div class="input-group col-sm-4">
+                                                <button type="button" name="addRow" id="btn-add-skill" class="btn btn-default">Add</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingFour">
+                                    <h4 class="panel-title">
+                                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                            Languages
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                                    <div class="panel-body">
+                                        <div id="languages-container">
+
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label"></label>
+                                            <div class="input-group col-sm-4">
+                                                <button type="button" name="addRow" id="btn-add-languages" class="btn btn-default">Add</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingFive">
+                                    <h4 class="panel-title">
+                                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                            Sertifikasi
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                                    <div class="panel-body">
+                                        <div id="certification-container">
+
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label"></label>
+                                            <div class="input-group col-sm-4">
+                                                <button type="button" name="addRow" id="btn-add-certification" class="btn btn-default">Add</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="box-footer">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"></label>
+                            <div class="input-group col-sm-4">
+                                <button type="button" class="btn btn-default" id="btn-back">Batal</button>&nbsp;
+                                <button type="submit" name="action" id="btn-save" class="btn btn-primary">Simpan</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+
+    </div>
+    <!-- /.box -->
+</section>
+
+
+</body>
+
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">
+<head>
+    <title>Tambah / Ubah Slip Gaji</title>
+
+    <script type="text/javascript">
+
+        function doBack(){
+            window.location.href = '[[@{/web/paycheck}]]';
+        }
+
+        $(function(){
+
+            $('.datepicker').datepicker({
+                format: "yyyy-mm",
+                viewMode: "months",
+                minViewMode: "months",
+                autoclose: true
+            });
+
+            var $form = $('#form-paycheck');
+
+            $form.submit(function (e) {
+
+                e.preventDefault();
+
+                $btnSubmit = $('#btn-save');
+
+                $(this).ajaxSubmit({
+                    success: function(){
+                        showMessage('success', 'Simpan data berhasil');
+                        setTimeout(function(){
+                            doBack();
+                        }, redirectDuration)
+
+                    },
+                    error: function(){
+                        showMessage('error', 'Gagal menyimpan data');
+                    },
+                    beforeSubmit: function(){
+                        $btnSubmit.attr('disabled', 'disabled');
+                        $btnSubmit.text('Menyimpan...');
+                    },
+                    complete: function(){
+                        $btnSubmit.removeAttr('disabled', 'disabled');
+                        $btnSubmit.text('Simpan');
+                    }
+                });
+
+                return false;
+
+            });
+        });
+    </script>
+
+</head>
+<body>
+
+
+<section class="content-header" layout:fragment="content-header">
+    <h1>Tambah / Ubah Slip Gaji</h1>
+    <ol class="breadcrumb">
+        <li><a th:href="@{/}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a th:href="@{/web/paycheck}"><i class="fa fa-list-o"></i> Daftar Slip Gaji</a></li>
+        <li class="active">Tambah / Ubah Slip Gaji</li>
+    </ol>
+</section>
+
+<section class="content container-fluid" layout:fragment="content">
+    <div class="box">
+
+        <form id="form-paycheck" th:action="@{/web/paycheck/save}" th:object="${paycheck}" method="POST">
+
+            <input type="hidden" th:field="*{id}" name="id">
+
+            <!-- /.box-header -->
+            <div class="box-body">
+
+                <div class="form-group">
+                    <label for="employee" class="col-sm-2 control-label">Nama Pegawai</label>
+                    <div class="input-group col-sm-4">
+                        <select class="form-control select2" th:field="*{employee}" id="employee">
+                            <option value="" selected disabled>-- Pilih Pegawai --</option>
+                            <option th:each="employee: ${employees}" th:value="${employee.id}">[[${employee.fullName}]]</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="date" class="col-sm-2 control-label">Bulan</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" class="form-control datepicker" th:field="*{salaryDate}" id="date" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="file" class="col-sm-2 control-label">Slip Gaji</label>
+                    <div class="input-group col-sm-4">
+                        <input id="file" type="file" th:field="*{file}" name="file"/>
+                    </div>
+                </div>
+
+            </div>
+            <!-- /.box-body -->
+
+            <div class="box-footer">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"></label>
+                    <div class="input-group col-sm-10" style="padding: 16px 0px 16px 0px;">
+                        <button type="button" class="btn btn-default" onclick="doBack();">Batal</button>&nbsp;
+                        <button type="submit" name="action" id="btn-save" class="btn btn-primary">Simpan</button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+    <!-- /.box -->
+</section>
+
+
+</body>
+</html>

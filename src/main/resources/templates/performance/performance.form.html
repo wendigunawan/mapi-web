@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">
+<head>
+    <title>Tambah / Ubah Kinerja</title>
+
+    <script type="text/javascript">
+
+        function doBack(){
+            window.location.href = '[[@{/web/performance}]]';
+        }
+
+        $(function(){
+
+            $('.datepicker').datepicker({
+                format: "yyyy-mm-dd",
+                autoclose: true
+            });
+
+            $("#perform-value").rating({
+                showClear: false,
+                showCaption: false,
+                size: "sm"
+            });
+
+            $('#perform-value').on('rating:change', function(event, value, caption) {
+                $("#value-input").val(value);
+            });
+
+            var $form = $('#form-performance');
+
+            $form.submit(function (e) {
+
+                e.preventDefault();
+
+                $btnSubmit = $('#btn-save');
+
+                $(this).ajaxSubmit({
+                    success: function(){
+                        showMessage('success', 'Simpan data berhasil');
+                        setTimeout(function(){
+                            doBack();
+                        }, redirectDuration)
+
+                    },
+                    error: function(){
+                        showMessage('error', 'Gagal menyimpan data');
+                    },
+                    beforeSubmit: function(){
+                        $btnSubmit.attr('disabled', 'disabled');
+                        $btnSubmit.text('Menyimpan...');
+                    },
+                    complete: function(){
+                        $btnSubmit.removeAttr('disabled', 'disabled');
+                        $btnSubmit.text('Simpan');
+                    }
+                });
+
+                return false;
+
+            });
+        });
+    </script>
+
+</head>
+<body>
+
+
+<section class="content-header" layout:fragment="content-header">
+    <h1>Tambah / Ubah Kinerja</h1>
+    <ol class="breadcrumb">
+        <li><a th:href="@{/}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a th:href="@{/web/performance}"><i class="fa fa-list-o"></i> Daftar Kinerja</a></li>
+        <li class="active">Tambah / Ubah Kinerja</li>
+    </ol>
+</section>
+
+<section class="content container-fluid" layout:fragment="content">
+    <div class="box">
+
+        <form id="form-performance" th:action="@{/web/performance/save}" th:object="${performance}" method="POST">
+
+            <input type="hidden" th:field="*{id}" name="id">
+
+            <!-- /.box-header -->
+            <div class="box-body">
+
+                <div class="form-group">
+                    <label for="datepicker" class="col-sm-2 control-label">Tanggal</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" id="datepicker" th:field="*{performanceDate}" class="form-control datepicker" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="employee" class="col-sm-2 control-label">Nama Pegawai</label>
+                    <div class="input-group col-sm-4">
+                        <select class="form-control select2" th:field="*{employee}" id="employee">
+                            <option value="" selected disabled>-- Pilih Pegawai --</option>
+                            <option th:each="employee: ${employees}" th:value="${employee.id}">[[${employee.fullName}]]</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="component" class="col-sm-2 control-label">Komponen Penilaian</label>
+                    <div class="input-group col-sm-4">
+                        <select class="form-control select2" th:field="*{component}" id="component">
+                            <option value="" selected disabled>-- Pilih Pegawai --</option>
+                            <option th:each="comp: ${components}" th:value="${comp.id}">[[${comp.name}]]</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="datepicker" class="col-sm-2 control-label">Nilai</label>
+                    <div class="input-group col-sm-4">
+                        <input type="text" th:value="*{performanceValue}" id="perform-value" class="rating-loading" name="perform-value" data-min="0" data-max="5" data-step="1">
+                        <input type="hidden" name="valueInput" th:field="*{valueInput}" id="value-input">
+                    </div>
+                </div>
+            </div>
+            <!-- /.box-body -->
+
+            <div class="box-footer">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"></label>
+                    <div class="input-group col-sm-10" style="padding: 16px 0px 16px 0px;">
+                        <button type="button" class="btn btn-default" onclick="doBack();">Batal</button>&nbsp;
+                        <button type="submit" name="action" id="btn-save" class="btn btn-primary">Simpan</button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+    <!-- /.box -->
+</section>
+
+
+</body>
+</html>
