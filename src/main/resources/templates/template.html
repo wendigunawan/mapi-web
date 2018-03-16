@@ -15,6 +15,7 @@
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
     <!-- Bootstrap -->
     <link th:href="@{/vendors/bootstrap/dist/css/bootstrap.min.css}" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css}" />
     <!-- Font Awesome -->
     <link th:href="@{/vendors/font-awesome/css/font-awesome.min.css}" rel="stylesheet">
     <!-- Simple Line Icons -->
@@ -39,6 +40,91 @@
 
     <!-- Production Style -->
     <link th:href="@{/css/styles.css}" rel="stylesheet">
+
+
+    <!-- jQuery -->
+    <script th:src="@{/vendors/jquery/dist/jquery.min.js}"></script>
+    <!-- Bootstrap -->
+    <script th:src="@{/vendors/bootstrap/dist/js/bootstrap.min.js}"></script>
+
+    <script th:src="@{/vendors/datatables.net/js/jquery.dataTables.min.js}"></script>
+    <script th:src="@{/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js}"></script>
+    <!-- FastClick -->
+    <script th:src="@{/vendors/fastclick/lib/fastclick.js}"></script>
+    <!-- NProgress -->
+    <script th:src="@{/vendors/nprogress/nprogress.js}"></script>
+    <!-- bootstrap-progressbar -->
+    <script th:src="@{/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js}"></script>
+    <!-- iCheck -->
+    <script th:src="@{/vendors/iCheck/icheck.min.js}"></script>
+    <!-- bootstrap-daterangepicker -->
+    <script th:src="@{/vendors/moment/min/moment.min.js}"></script>
+    <script th:src="@{/vendors/bootstrap-daterangepicker/daterangepicker.js}"></script>
+    <!-- bootstrap-wysiwyg -->
+    <script th:src="@{/vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js}"></script>
+    <script th:src="@{/vendors/jquery.hotkeys/jquery.hotkeys.js}"></script>
+    <script th:src="@{/vendors/google-code-prettify/src/prettify.js}"></script>
+    <!-- jQuery Tags Input -->
+    <script th:src="@{/vendors/jquery.tagsinput/src/jquery.tagsinput.js}"></script>
+    <!-- Switchery -->
+    <script th:src="@{/vendors/switchery/dist/switchery.min.js}"></script>
+    <!-- Bootstrap Select Master -->
+    <script th:src="@{/vendors/bootstrap-select-master/dist/js/bootstrap-select.js}" defer></script>
+    <!-- Parsley -->
+    <script th:src="@{/vendors/parsleyjs/dist/parsley.min.js}"></script>
+    <!-- Autosize -->
+    <script th:src="@{/vendors/autosize/dist/autosize.min.js}"></script>
+    <!-- jQuery autocomplete -->
+    <script th:src="@{/vendors/devbridge-autocomplete/dist/jquery.autocomplete.min.js}"></script>
+    <!-- starrr -->
+    <script th:src="@{/vendors/starrr/dist/starrr.js}"></script>
+
+    <script th:src="@{/js/custom.js}"></script>
+
+    <script type="text/javascript">
+
+        var redirectDuration = 1000;
+
+        function openResetPasswordForm(userId){
+            $('#modal-reset-password').modal('show');
+            var form = $('#form-reset-password')[0];
+            form.reset();
+            form['user_id'].value = userId;
+        }
+
+        function openChangePasswordForm(){
+            $('#modal-change-password').modal('show');
+            var form = $('#form-change-password')[0];
+            form.reset();
+        }
+
+        $(function () {
+            $.extend( true, $.fn.dataTable.defaults, {
+                "processing": true,
+                "serverSide": true,
+                "searching": true,
+                "ordering": true,
+                "columnDefs": [
+                    {
+                        "searchable": false,
+                        "orderable": false,
+                        "targets": 0
+                    },
+                    {
+                        "searchable": false,
+                        "orderable": false,
+                        "targets": -1
+                    }
+                ]
+            });
+
+            //$('.select2').select2();
+        });
+
+        function showMessage(type, message) {
+
+        }
+    </script>
 
 
 </head>
@@ -331,48 +417,6 @@
     </div>
     <div class="clearfix"></div>
 </footer>
-
-
-<!-- jQuery -->
-<script th:src="@{/vendors/jquery/dist/jquery.min.js}"></script>
-<!-- Bootstrap -->
-<script th:src="@{/vendors/bootstrap/dist/js/bootstrap.min.js}"></script>
-<!-- FastClick -->
-<script th:src="@{/vendors/fastclick/lib/fastclick.js}"></script>
-<!-- NProgress -->
-<script th:src="@{/vendors/nprogress/nprogress.js}"></script>
-<!-- bootstrap-progressbar -->
-<script th:src="@{/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js}"></script>
-<!-- iCheck -->
-<script th:src="@{/vendors/iCheck/icheck.min.js}"></script>
-<!-- bootstrap-daterangepicker -->
-<script th:src="@{/vendors/moment/min/moment.min.js}"></script>
-<script th:src="@{/vendors/bootstrap-daterangepicker/daterangepicker.js}"></script>
-<!-- bootstrap-wysiwyg -->
-<script th:src="@{/vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js}"></script>
-<script th:src="@{/vendors/jquery.hotkeys/jquery.hotkeys.js}"></script>
-<script th:src="@{/vendors/google-code-prettify/src/prettify.js}"></script>
-<!-- jQuery Tags Input -->
-<script th:src="@{/vendors/jquery.tagsinput/src/jquery.tagsinput.js}"></script>
-<!-- Switchery -->
-<script th:src="@{/vendors/switchery/dist/switchery.min.js}"></script>
-<!-- Bootstrap Select Master -->
-<script th:src="@{/vendors/bootstrap-select-master/dist/js/bootstrap-select.js}" defer></script>
-<!-- Parsley -->
-<script th:src="@{/vendors/parsleyjs/dist/parsley.min.js}"></script>
-<!-- Autosize -->
-<script th:src="@{/vendors/autosize/dist/autosize.min.js}"></script>
-<!-- jQuery autocomplete -->
-<script th:src="@{/vendors/devbridge-autocomplete/dist/jquery.autocomplete.min.js}"></script>
-<!-- starrr -->
-<script th:src="@{/vendors/starrr/dist/starrr.js}"></script>
-
-<script th:src="@{/js/custom.js}"></script>
-
-<script type="text/javascript">
-
-
-</script>
 
 </body>
 

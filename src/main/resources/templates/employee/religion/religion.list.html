@@ -121,31 +121,31 @@
     </ol>
 </section>
 
-<section class="content container-fluid" layout:fragment="content">
-    <div class="box">
-        <div class="box-header">
-            <a th:href="@{/web/religion/add}" class="btn btn-sm btn-success pull-right"><i class="fa fa-plus"></i>
-                Tambah</a>
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body table-responsive">
-            <table class="table table-hover" id="datatable-religion">
-                <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Agama</th>
-                    <th>Aksi</th>
-                </tr>
-                </thead>
 
-                <tbody></tbody>
-            </table>
-        </div>
-        <!-- /.box-body -->
-
+<div class="right_col" role="main" layout:fragment="content">
+    <!-- breadcrumb -->
+    <div class="row">
+        <ol class="breadcrumb">
+            <li><a href="#">Home</a></li>
+            <li class="active">Daftar Agama</li>
+        </ol>
     </div>
-    <!-- /.box -->
-</section>
+
+    <table class="table table-hover" id="datatable-religion">
+        <thead>
+        <tr>
+            <th>No</th>
+            <th>Agama</th>
+            <th>Aksi</th>
+        </tr>
+        </thead>
+
+        <tbody></tbody>
+    </table>
+
+</div>
+
+
 
 </body>
 
